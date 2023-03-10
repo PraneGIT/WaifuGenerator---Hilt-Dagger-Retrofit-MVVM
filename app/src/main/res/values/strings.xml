@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">WaifuGenerator</string>
+
+    <string-array name="types">
+        <item>waifu</item>
+        <item>neko</item>
+        <item>shinobu</item>
+        <item>megumin</item>
+        <item>bully</item>
+        <item>cuddle</item>
+        <item>cry</item>
+        <item>hug</item>
+        <item>awoo</item>
+        <item>pat</item>
+        <item>smug</item>
+        <item>bonk</item>
+        <item>blush</item>
+        <item>smile</item>
+        <item>highfive</item>
+        <item>kill</item>
+        <item>happy</item>
+        <item>poke</item>
+        <item>dance</item>
+        <item>cringe</item>
+    </string-array>
+</resources>
