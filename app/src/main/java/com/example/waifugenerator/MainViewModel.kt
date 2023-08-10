@@ -24,8 +24,10 @@ class MainViewModel @Inject constructor(private val waifuRepo: WaifuRepo) :ViewM
             _mWaifuLink.value = Resource.loading()
             val response = waifuRepo.getWaifuURL(url)
             if(response.isSuccessful){
-                Log.d("MainViewModel", "getWaifu: ${response.body()!!.url}")
+//                Log.d("MainViewModel", "getWaifu: ${response.body()!!.url}") //don't use logs in testing (pls)
                 _mWaifuLink.value = Resource.success(response.body()!!.url)
+            }else{
+                throw Exception("Error getting waifu")
             }
         }catch (e:Exception){
             _mWaifuLink.value = Resource.error(e)
