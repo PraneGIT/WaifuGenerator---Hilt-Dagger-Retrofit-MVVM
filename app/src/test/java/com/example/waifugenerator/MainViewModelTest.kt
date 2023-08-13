@@ -1,6 +1,7 @@
 package com.example.waifugenerator
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import com.example.waifugenerator.Repository.WaifuRepo
 import com.example.waifugenerator.Retrofit.Resource
 import com.example.waifugenerator.models.Waifu
@@ -26,6 +27,8 @@ class MainViewModelTest {
 
     private var testDispatcher= StandardTestDispatcher()   //mocking main with dispatcher block
 
+    lateinit var savedState : SavedStateHandle              //mock savedState
+
     @get:Rule                                             // runs before "before"
     var instantExecutorRule = InstantTaskExecutorRule()   //makes it synchronous!!
 
@@ -36,6 +39,7 @@ class MainViewModelTest {
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         Dispatchers.setMain(testDispatcher)                // no context so mock main
+         savedState = SavedStateHandle(mapOf("url" to "https://i.waifu.pics/M8G5bSN.gif"))
     }
 
 
@@ -43,7 +47,7 @@ class MainViewModelTest {
     fun getWaifu_empty_expectedEmpty() = runTest{
         Mockito.`when`(waifuRepo.getWaifuURL("")).thenReturn(Response.success(Waifu("")))
 
-        val mainViewModelTest= MainViewModel(waifuRepo)
+        val mainViewModelTest= MainViewModel(waifuRepo,savedState)
 
          mainViewModelTest.getWaifu("")
 
@@ -58,7 +62,7 @@ class MainViewModelTest {
     fun getWaifu_val_expectedVal() = runTest{
         Mockito.`when`(waifuRepo.getWaifuURL("a")).thenReturn(Response.success(Waifu("a.html")))
 
-        val mainViewModelTest= MainViewModel(waifuRepo)
+        val mainViewModelTest= MainViewModel(waifuRepo,savedState)
 
         mainViewModelTest.getWaifu("a")
 
@@ -74,7 +78,7 @@ class MainViewModelTest {
     fun getWaifu_error_expectedError() = runTest{
         Mockito.`when`(waifuRepo.getWaifuURL("error")).thenReturn(Response.error(500, ResponseBody.create(null,"Error getting waifu")))
 
-        val mainViewModelTest= MainViewModel(waifuRepo)
+        val mainViewModelTest= MainViewModel(waifuRepo,savedState)
 
         mainViewModelTest.getWaifu("error")
 

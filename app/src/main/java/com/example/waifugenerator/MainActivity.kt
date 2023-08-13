@@ -1,6 +1,5 @@
 package com.example.waifugenerator
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +8,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.waifugenerator.Contants.Constants
 import com.example.waifugenerator.Retrofit.Resource
@@ -19,8 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    lateinit var mainViewModel:MainViewModel
-//        private val mainViewModel:MainViewModel by viewModels()
+//    lateinit var mainViewModel:MainViewModel
+        private val mainViewModel:MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +36,17 @@ class MainActivity : AppCompatActivity() {
             spinner.adapter = adapter
         }
 
-        mainViewModel= ViewModelProvider(this)[MainViewModel::class.java]
+//        mainViewModel= ViewModelProvider(this)[MainViewModel::class.java]
+
+        if(mainViewModel.getURLPersistence()?.isNotEmpty() == true){
+            e("url_savedStateHandler",mainViewModel.getURLPersistence()!!)
+            Glide
+                .with(this@MainActivity)
+                .load(mainViewModel.getURLPersistence())
+                .placeholder(com.bumptech.glide.R.drawable.abc_ab_share_pack_mtrl_alpha)
+                .centerCrop()
+                .into(findViewById<ImageView>(R.id.iv_waifu));
+        }
 
         setWaifuObservables()
 

@@ -1,20 +1,18 @@
 package com.example.waifugenerator
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.waifugenerator.Repository.WaifuRepo
 import com.example.waifugenerator.Retrofit.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val waifuRepo: WaifuRepo) :ViewModel() {
+class MainViewModel @Inject constructor(private val waifuRepo: WaifuRepo,private val savedStateHandle: SavedStateHandle) :ViewModel() {
 
     private var _mWaifuLink= MutableLiveData<Resource<String>>()
      var mWaifuLink : LiveData<Resource<String>> = _mWaifuLink
@@ -26,6 +24,7 @@ class MainViewModel @Inject constructor(private val waifuRepo: WaifuRepo) :ViewM
             if(response.isSuccessful){
 //                Log.d("MainViewModel", "getWaifu: ${response.body()!!.url}") //don't use logs in testing (pls)
                 _mWaifuLink.value = Resource.success(response.body()!!.url)
+                savedStateHandle["url"] = response.body()!!.url
             }else{
                 throw Exception("Error getting waifu")
             }
@@ -33,6 +32,11 @@ class MainViewModel @Inject constructor(private val waifuRepo: WaifuRepo) :ViewM
             _mWaifuLink.value = Resource.error(e)
         }
     }
+
+    fun getURLPersistence():String?{
+        return savedStateHandle.get<String>("url")
+    }
+
 
 }
 
